@@ -12,4 +12,12 @@ public class AdminController {
     public String index() {
         return "admin/index";
     }
+    @GetMapping("/add_product")
+    public String addProduct() {
+        return "admin/add_product";
+    }
+    @GetMapping("/category")
+    public String category() {
+        return "admin/category";
+    }
 }
