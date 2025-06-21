@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,15 +27,12 @@ public class AdminController {
     private CategoryService categoryService;
 
     @GetMapping("/")
-    public String index() {
-        return "admin/index";
-    }
+    public String index() { return "admin/index";}
     @GetMapping("/add_product")
-    public String addProduct() {
-        return "admin/add_product";
-    }
+    public String addProduct() { return "admin/add_product";}
     @GetMapping("/category")
-    public String category() {
+    public String category(Model m) {
+        m.addAttribute("categorys", categoryService.getAllCategory());
         return "admin/category";
     }
 
@@ -64,5 +62,42 @@ public class AdminController {
             }
         }
         return "redirect:/admin/category";
+    }
+
+    @GetMapping("/deleteCategory/{id}") //work of DeteleMapping
+    public String deleteCategory(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        Boolean deleteCategory = categoryService.deleteCategory(id);
+        if(deleteCategory) redirectAttributes.addFlashAttribute("successMsg", "Category Successfully Deleted");
+        else redirectAttributes.addFlashAttribute("errorMsg", "Internal Server Error");
+        return "redirect:/admin/category";
+    }
+
+    @GetMapping("/editCategory/{id}")
+    public String editCategory(@PathVariable int id, Model m, RedirectAttributes redirectAttributes) {
+        m.addAttribute("category", categoryService.getCategoryById(id));
+        return "admin/edit_category";
+    }
+
+    @PostMapping("/updateCategory")
+    public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+        Category oldCategory = categoryService.getCategoryById(category.getId());
+        String imageName = file.isEmpty() ? oldCategory.getImageName() : file.getOriginalFilename();
+        if(!ObjectUtils.isEmpty(category)) {
+            oldCategory.setName(category.getName());
+            oldCategory.setIsActive(category.getIsActive());
+            oldCategory.setImageName(imageName);
+        }
+        Category updateCategory = categoryService.saveCategory(oldCategory);
+        if(!ObjectUtils.isEmpty(updateCategory)) {
+            if(!file.isEmpty()) {
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator + file.getOriginalFilename());
+                System.out.println(path);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+            redirectAttributes.addFlashAttribute("successMsg", "Category Updated Successfully");
+        }
+        else redirectAttributes.addFlashAttribute("errorMsg", "Something is wrong");
+        return "redirect:/admin/editCategory/"+category.getId();
     }
 }
