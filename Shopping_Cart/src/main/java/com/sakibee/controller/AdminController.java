@@ -1,12 +1,29 @@
 package com.sakibee.controller;
 
+import com.sakibee.model.Category;
+import com.sakibee.service.CategoryService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping("/")
     public String index() {
@@ -19,5 +36,33 @@ public class AdminController {
     @GetMapping("/category")
     public String category() {
         return "admin/category";
+    }
+
+    @PostMapping("/saveCategory")
+    public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+
+        String imageName = file.getOriginalFilename();
+        if(imageName.isEmpty()) imageName = "defaultImage.jpg";
+        category.setImageName(imageName);
+
+        Boolean existCategory = categoryService.existCategory(category.getName());
+        if(existCategory) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Category " + category.getName() + " is already exists.");
+        } else {
+            Category saveCategory = categoryService.saveCategory(category);
+            if(!ObjectUtils.isEmpty(saveCategory)) {
+
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "category_img" + File.separator + file.getOriginalFilename());
+                System.out.println(path);
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+                //handle missing field
+                redirectAttributes.addFlashAttribute("successMsg", "Category " + category.getName() + " Successfully Saved");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMsg", "Internal Server Error.");
+            }
+        }
+        return "redirect:/admin/category";
     }
 }
