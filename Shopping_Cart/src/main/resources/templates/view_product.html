@@ -13,23 +13,23 @@
 
                 <div class="row">
                     <div class="col-md-6 text-end">
-                        <img src="/img/product_img/laptop.jpg" width="330px" height="400px">
+                        <img th:src="@{'/img/product_img/'+${product.image}}" width="400px" height="350px">
                     </div>
                     <div class="col-md-6">
-                        <p class="fs-3 fw-bold">Laptop</p>
+                        <p class="fs-3 fw-bold">[[${product.title}]]</p>
                         <p>
                             <span class="fw-bold">Description: </span><br>
-                            Macbook, M4 Chip, 8GB RAM, 256GB SSD
+                            [[${product.description}]]
                         </p>
                         <p>
                             <span class="fw-bold">Product Details</span><br>
                             Status: <span class="badge bg-success">Available</span>
                             <span class="badge bg-warning">Out of Stock</span><br>
-                            Category: Laptop<br> Policy: 7 Days Replacement & Return
+                            Category: [[${product.category}]]<br> Policy: 7 Days Replacement & Return
                         </p>
                         <p class="fs-5 fw-bold">
-                            Price: &nbsp; &nbsp; &nbsp; &nbsp;<i class="fas fa-rupee-sign"></i>
-                            60000 <span class="fs-6 text-decoration-line-through text-secondary">100000</span>
+                            Price: &nbsp; &nbsp; &nbsp;<i class="fa-solid fa-bangladeshi-taka-sign"></i>
+                            [[${product.price}]] <span class="fs-6 text-decoration-line-through text-secondary">100000</span>
                             <span class="fs-6" text-success>40% off</span>
                         </p>
                         <div class="row">

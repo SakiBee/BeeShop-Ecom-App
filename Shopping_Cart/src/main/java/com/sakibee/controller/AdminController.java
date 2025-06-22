@@ -1,7 +1,9 @@
 package com.sakibee.controller;
 
 import com.sakibee.model.Category;
+import com.sakibee.model.Product;
 import com.sakibee.service.CategoryService;
+import com.sakibee.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -18,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,6 +28,8 @@ public class AdminController {
 
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private ProductService productService;
 
     @GetMapping("/")
     public String index() { return "admin/index";}
@@ -77,7 +82,6 @@ public class AdminController {
         m.addAttribute("category", categoryService.getCategoryById(id));
         return "admin/edit_category";
     }
-
     @PostMapping("/updateCategory")
     public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
         Category oldCategory = categoryService.getCategoryById(category.getId());
@@ -100,4 +104,84 @@ public class AdminController {
         else redirectAttributes.addFlashAttribute("errorMsg", "Something is wrong");
         return "redirect:/admin/editCategory/"+category.getId();
     }
+
+    @GetMapping("/loadAddProduct")
+    public String loadAddProduct(Model m) {
+        List<Category> categories = categoryService.getAllCategory();
+        m.addAttribute("categories", categories);
+        return "admin/add_product";
+    }
+
+    @PostMapping("/saveProduct")
+    public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+
+        String imageName = file.isEmpty() ? "defaultImage.jpg" : file.getOriginalFilename();
+        product.setImage(imageName);
+
+        Product saveProduct = productService.saveProduct(product);
+
+        if(!ObjectUtils.isEmpty(saveProduct)) {
+            File saveFile = new ClassPathResource("static/img").getFile();
+            Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator + file.getOriginalFilename());
+            System.out.println(path);
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            redirectAttributes.addFlashAttribute("successMsg", "Product Added Successfully");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMsg", "Internal Server Error.");
+        }
+        return "redirect:/admin/loadAddProduct";
+    }
+
+    @GetMapping("/products")
+    public String loadViewProduct(Model m) {
+        List<Product> products = productService.getAllProducts();
+        m.addAttribute("products", products);
+        return "admin/products";
+    }
+
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        Boolean deleteProduct = productService.deleteById(id);
+        if(deleteProduct) {
+            redirectAttributes.addFlashAttribute("successMsg", "Product Deleted Successfully");
+        } else redirectAttributes.addFlashAttribute("errorMsg", "Internal Server Error.");
+        return "redirect:/admin/products";
+    }
+
+    @GetMapping("/loadEditProduct/{id}")
+    public String loadEditProduct(@PathVariable int id, Model m) {
+        Product product = productService.getProduct(id);
+        m.addAttribute("product", product);
+        m.addAttribute("categories", categoryService.getAllCategory());
+        return "admin/edit_product";
+    }
+
+    @PostMapping("/updateProduct")
+    public String updateCategory(@ModelAttribute Product product, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+        Product oldProduct = productService.getProduct(product.getId());
+        String imageName = file.isEmpty() ? oldProduct.getImage() : file.getOriginalFilename();
+
+        if(!ObjectUtils.isEmpty(product)) {
+            oldProduct.setTitle(product.getTitle());
+            oldProduct.setCategory(product.getCategory());
+            oldProduct.setPrice(product.getPrice());
+            oldProduct.setDescription(product.getDescription());
+            oldProduct.setStock(product.getStock());
+            oldProduct.setImage(imageName);
+        }
+        Product updatedProduct = productService.saveProduct(oldProduct);
+
+        if(!ObjectUtils.isEmpty(updatedProduct)) {
+            if(!file.isEmpty()) {
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+            redirectAttributes.addFlashAttribute("successMsg", "Category Updated Successfully");
+        }
+        else redirectAttributes.addFlashAttribute("errorMsg", "Something is wrong");
+
+        return "redirect:/admin/products";
+    }
+
 }

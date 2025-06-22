@@ -21,30 +21,31 @@
                             </th:block>
                         </div>
                         <div class="card-body">
-                            <form method="post" action="/admin/saveProduct" enctype="multipart/form-data">
+                            <form method="post" action="/admin/updateProduct" enctype="multipart/form-data">
+                                <input type="hidden" name="id" th:value="${product.id}">
                                 <div class="mb-3">
                                     <label>Enter Title</label>
-                                    <input type="text" name="title" class="form-control">
+                                    <input type="text" name="title" th:value="${product.title}" class="form-control">
                                 </div>
                                 <div class="mb-3">
                                     <label>Description</label>
-                                    <textarea rows="3" cols="" class="form-control" name="description"></textarea>
+                                    <textarea rows="3" cols="" class="form-control" th:text="${product.description}" name="description"></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label>Category</label>
                                     <select class="form-control" name="category">
-                                        <option>--Select--</option>
-                                        <option th:each="c:${categories}">[[${c.name}]]</option>
+                                        <option>[[${product.category}]]</option>
+                                        <option th:each="cat:${categories}">[[${cat.name}]]</option>
                                     </select>
                                 </div>
                                 <div class="row">
                                     <div class="mb-3 col">
                                         <label>Price</label>
-                                        <input type="number" name="price" class="form-control">
+                                        <input type="number" name="price" th:value="${product.price}" class="form-control">
                                     </div>
                                     <div class="mb-3 col">
                                         <label>Enter Stock</label>
-                                        <input type="number" name="stock" class="form-control">
+                                        <input type="number" name="stock" th:value="${product.stock}" class="form-control">
                                     </div>
 
                                 </div>
@@ -52,7 +53,10 @@
                                     <label>Upload Image</label>
                                     <input type="file" name="file" class="form-control">
                                 </div>
-                                <button class="btn btn-primary col-md-12">Submit</button>
+                                <div class="col-md-12 offset-4">
+                                    <img th:src="@{'/img/product_img/'+${product.image}}" height="120" width="160">
+                                </div>
+                                <button class="btn btn-primary col-md-12">Update</button>
                             </form>
                         </div>
                     </div>
