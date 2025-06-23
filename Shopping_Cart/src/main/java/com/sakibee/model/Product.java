@@ -21,7 +21,9 @@ public class Product {
     private String description;
     private String category;
     private double price;
+    private double discount;
+    private double discountPrice;
     private int stock;
     private String image;
-
+    private Boolean isActive;
 }

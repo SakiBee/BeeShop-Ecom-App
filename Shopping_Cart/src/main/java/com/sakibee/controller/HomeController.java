@@ -37,9 +37,9 @@ public class HomeController {
 
     @GetMapping("/products")
     public String products(Model m) {
-        List<Category> categories = categoryService.getAllCategory();
+        List<Category> categories = categoryService.getAllActiveCategory();
         m.addAttribute("categories", categories);
-        List<Product> products = productService.getAllProducts();
+        List<Product> products = productService.getAllActiveProduct();
         m.addAttribute("products", products);
         return "product";
     }

@@ -11,6 +11,16 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Override
+    public List<Category> getAllActiveCategory() {
+        List<Category> categories = categoryRepository.findByIsActiveTrue();
+        return categories;
+    }
+
     @Override
     public Category getCategoryById(int id) {
         Category category = categoryRepository.findById(id).orElse(null);
@@ -32,8 +42,6 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.existsByName(name);
     }
 
-    @Autowired
-    private CategoryRepository categoryRepository;
 
     @Override
     public Category saveCategory(Category category) {
