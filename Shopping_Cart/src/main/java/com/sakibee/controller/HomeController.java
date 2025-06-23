@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -36,11 +37,12 @@ public class HomeController {
     }
 
     @GetMapping("/products")
-    public String products(Model m) {
+    public String products(Model m, @RequestParam(value="category", defaultValue = "") String category) {
         List<Category> categories = categoryService.getAllActiveCategory();
         m.addAttribute("categories", categories);
-        List<Product> products = productService.getAllActiveProduct();
+        List<Product> products = productService.getAllActiveProduct(category);
         m.addAttribute("products", products);
+        m.addAttribute("paramValue", category);
         return "product";
     }
 

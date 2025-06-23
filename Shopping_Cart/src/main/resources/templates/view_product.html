@@ -23,15 +23,23 @@
                         </p>
                         <p>
                             <span class="fw-bold">Product Details</span><br>
-                            Status: <span class="badge bg-success">Available</span>
-                            <span class="badge bg-warning">Out of Stock</span><br>
-                            Category: [[${product.category}]]<br> Policy: 7 Days Replacement & Return
+                            <span class="fw-bold text-secondary">Status: </span>
+                            <th:block th:if="${product.stock > 0}">
+                                <span class="badge bg-success">Available</span>
+                            </th:block>
+                            <th:block th:unless="${product.stock > 0}">
+                                <span class="badge bg-warning">Out of Stock</span>
+                            </th:block>
+                            <br>
+                            <span class="fw-bold text-secondary">Category: </span> [[${product.category}]]<br>
+                            <span class="fw-bold text-secondary">Policy: </span> 7 Days Replacement & Return
                         </p>
-                        <p class="fs-5 fw-bold">
-                            Price: &nbsp;
-                            <span class="fs-6 text-decoration-line-through text-secondary"><i class="fa-solid fa-bangladeshi-taka-sign"></i>[[${product.price}]]</span>
+                        <p class="fs-6 fw-bold">
+                            Price: &nbsp; <i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${product.discountPrice}]] <br>
+                            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; <span class="fs-6 text-decoration-line-through text-secondary">
+                                <i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${product.price}]]</span>
                             <span class="fs-6 text-success">[[${product.discount}]]% off</span> <br>
-                            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; <i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${product.discountPrice}]]
+
                         </p>
                         <div class="row">
                             <div class="col-md-4 text-danger text-center p-2">
@@ -47,7 +55,13 @@
                                 <p>Free Shipping</p>
                             </div>
                         </div>
-                        <a href="Login.jsp" class="btn btn-danger col-md-12">Add To Card</a>
+
+                        <th:block th:if="${product.stock > 0}">
+                            <a href="Login.jsp" class="btn fw-bold btn-danger col-md-12">Add To Card</a>
+                        </th:block>
+                        <th:block th:unless="${product.stock > 0}">
+                            <a href="#" class="btn text-white fw-bold btn-warning col-md-12">Out of Stock</a>
+                        </th:block>
                     </div>
                 </div>
             </div>
