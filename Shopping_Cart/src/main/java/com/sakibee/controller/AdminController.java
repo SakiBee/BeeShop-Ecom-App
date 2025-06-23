@@ -47,8 +47,7 @@ public class AdminController {
     @PostMapping("/saveCategory")
     public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
 
-        String imageName = file.getOriginalFilename();
-        if(imageName.isEmpty()) imageName = "defaultImage.jpg";
+        String imageName = file.isEmpty() ? "defaultImage.jpg" : file.getOriginalFilename();
         category.setImageName(imageName);
 
         Boolean existCategory = categoryService.existCategory(category.getName());
