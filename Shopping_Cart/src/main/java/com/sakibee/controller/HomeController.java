@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -31,6 +32,17 @@ public class HomeController {
     private ProductService productService;
     @Autowired
     private UserService userService;
+
+    @ModelAttribute
+    public void getUserDatails(Principal p, Model m) {
+        if(p != null) {
+            String email = p.getName();
+            User user = userService.getUserByEmail(email);
+            m.addAttribute("user", user);
+        }
+        List<Category> category = categoryService.getAllActiveCategory();
+        m.addAttribute("category", category);
+    }
 
     @GetMapping("/")
     public String index() {
@@ -64,7 +76,6 @@ public class HomeController {
         return "view_product";
     }
 
-
     //User
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute User user, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
@@ -83,6 +94,5 @@ public class HomeController {
         }
         return "redirect:/register";
     }
-
 
 }

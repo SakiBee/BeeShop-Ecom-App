@@ -2,8 +2,10 @@ package com.sakibee.controller;
 
 import com.sakibee.model.Category;
 import com.sakibee.model.Product;
+import com.sakibee.model.User;
 import com.sakibee.service.CategoryService;
 import com.sakibee.service.ProductService;
+import com.sakibee.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -29,6 +32,17 @@ public class AdminController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserService userService;
+
+    @ModelAttribute
+    public void getUserDatails(Principal p, Model m) {
+        if(p != null) {
+            String email = p.getName();
+            User user = userService.getUserByEmail(email);
+            m.addAttribute("user", user);
+        }
+    }
 
     @GetMapping("/")
     public String index() { return "admin/index";}
