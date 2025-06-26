@@ -193,4 +193,32 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
+    @GetMapping("/users")
+    public String loadViewUsers(Model m) {
+        List<User> users = userService.getAllUsers("ROLE_USER");
+        m.addAttribute("users", users);
+        return "/admin/users";
+    }
+
+    @GetMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable int id, RedirectAttributes redirectAttributes) {
+        Boolean deleteUser = userService.deleteById(id);
+        if(deleteUser) {
+            redirectAttributes.addFlashAttribute("successMsg", "User Deleted Successfully");
+        }
+        else redirectAttributes.addFlashAttribute("errorMsg", "Internal Error");
+        return "redirect:/admin/users";
+    }
+
+    @GetMapping("/updateStatus")
+    public String updateUserAccStatus(@RequestParam Integer id, @RequestParam Boolean status, RedirectAttributes redirectAttributes) {
+        Boolean updated = userService.updateAccountStatus(id, status);
+        if(updated) {
+            redirectAttributes.addFlashAttribute("successMsg", "User Updated Successfully");
+        }
+        else redirectAttributes.addFlashAttribute("errorMsg", "Internal Error");
+
+        return "redirect:/admin/users";
+    }
+
 }
