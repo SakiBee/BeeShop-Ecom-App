@@ -35,5 +35,7 @@ public class User {
     private Integer failedAttempt;
     private Date lockTime;
 
+    private String resetToken;
+
 
 }

@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -23,6 +24,21 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
+    public User getUserByToken(String token) {
+        return userRepository.findByResetToken(token);
+    }
+
+    @Override
+    public void updateUserResetToken(String email, String token) {
+        User user = userRepository.findByEmail(email);
+        user.setResetToken(token);
+        userRepository.save(user);
+    }
+    @Override
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
 
     @Override
     public void increaseFailedAttempt(User user) {
@@ -104,4 +120,6 @@ public class UserServiceImpl implements UserService {
         User saveUser = userRepository.save(user);
         return saveUser;
     }
+
+
 }
