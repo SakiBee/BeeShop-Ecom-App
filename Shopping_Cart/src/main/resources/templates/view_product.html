@@ -12,6 +12,15 @@
             <div class="col-md-12 p-5">
 
                 <div class="row">
+                    <th:block th:if="${successMsg}">
+                        <p class="text-success fw-bold alert alert-success text-center">[[${successMsg}]]</p>
+<!--                        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+                    </th:block>
+                    <th:block th:if="${errorMsg}">
+                        <p class="text-danger fw-bold alert alert-danger text-center">[[${errorMsg}]]</p>
+<!--                        <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>-->
+                    </th:block>
+
                     <div class="col-md-6 text-end">
                         <img th:src="@{'/img/product_img/'+${product.image}}" width="400px" height="350px">
                     </div>
@@ -57,7 +66,13 @@
                         </div>
 
                         <th:block th:if="${product.stock > 0}">
-                            <a href="Login.jsp" class="btn fw-bold btn-danger col-md-12">Add To Card</a>
+                            <th:block th:if="${user == null}">
+                                <a href="/signin" class="btn fw-bold btn-danger col-md-12">Add To Card</a>
+                            </th:block>
+                            <th:block th:unless="${user == null}">
+                                <a th:href="@{'/user/addCart?pid='+${product.id}+'&uid='+${user.id}}" class="btn fw-bold btn-danger col-md-12">Add To Card</a>
+                            </th:block>
+
                         </th:block>
                         <th:block th:unless="${product.stock > 0}">
                             <a href="#" class="btn text-white fw-bold btn-warning col-md-12">Out of Stock</a>

@@ -121,9 +121,6 @@ public class HomeController {
             //generate a link to send in email like-> http://localhost:8080/reset_password?token=something
             String url = CommonUtil.generateUrl(request)+"/reset_password?token="+resetToken;
 
-
-            System.out.println(url);
-
             Boolean sendMail = commonUtil.sendMail(url, email);
             if(sendMail) {
                 redirectAttributes.addFlashAttribute("successMsg", "A reset link has sent to your email. Please check your email to reset password.");
@@ -141,25 +138,25 @@ public class HomeController {
     public String loadResetPassword(@RequestParam String token, Model m) {
         User user = userService.getUserByToken(token);
         if(ObjectUtils.isEmpty((user))) {
-            m.addAttribute("errorMsg", "Your link is invalid or expired");
-            return "error";
+            m.addAttribute("msg", "Your link is invalid or expired");
+            return "message";
         }
         m.addAttribute("token", token);
         return "reset_password";
     }
 
     @PostMapping("/reset_password")
-    public String resetPassword(@RequestParam String token, @RequestParam String password, RedirectAttributes redirectAttributes, Model m) {
+    public String resetPassword(@RequestParam String token, @RequestParam String password, Model m) {
         User user = userService.getUserByToken(token);
         if(ObjectUtils.isEmpty(user)) {
-            m.addAttribute("errorMsg", "Your link is invalid or expired");
-            return "error";
+            m.addAttribute("msg", "Your link is invalid or expired");
+            return "message";
         } else {
             user.setPassword(passwordEncoder.encode(password));
             user.setResetToken(null);
             userService.updateUser(user);
-            redirectAttributes.addFlashAttribute("successMsg", "Password Reset Successfully!");
-            return "redirect:/signin";
+            m.addAttribute("msg", "Password Reset Successfully!");
+            return "message";
         }
     }
 }
