@@ -3,6 +3,7 @@ package com.sakibee.controller;
 import com.sakibee.model.Category;
 import com.sakibee.model.Product;
 import com.sakibee.model.User;
+import com.sakibee.service.CartService;
 import com.sakibee.service.CategoryService;
 import com.sakibee.service.ProductService;
 import com.sakibee.service.UserService;
@@ -34,6 +35,8 @@ public class AdminController {
     private ProductService productService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private CartService cartService;
 
     @ModelAttribute
     public void getUserDatails(Principal p, Model m) {
@@ -41,6 +44,8 @@ public class AdminController {
             String email = p.getName();
             User user = userService.getUserByEmail(email);
             m.addAttribute("user", user);
+            Integer productCount = cartService.getCartProductCount(user.getId());
+            m.addAttribute("productCount",productCount);
         }
     }
 

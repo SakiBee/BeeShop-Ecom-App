@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/user")
@@ -27,6 +28,8 @@ public class UserController {
             String email = p.getName();
             User user = userService.getUserByEmail(email);
             m.addAttribute("user", user);
+            Integer productCount = cartService.getCartProductCount(user.getId());
+            m.addAttribute("productCount",productCount);
         }
     }
     public String home() {
@@ -41,6 +44,31 @@ public class UserController {
         } else redirectAttributes.addFlashAttribute("successMsg", "Product added to cart successfully");
 
         return "redirect:/product/"+pid;
+    }
+
+    @GetMapping("/cart")
+    public String laodCart(Principal p, Model m) {
+        User user = userService.getUserByEmail(p.getName());
+        List<Cart> carts = cartService.getCartByUser(user.getId());
+        Double totalOrderPrice = 0.0;
+        if(carts.size() > 0) {
+            totalOrderPrice = carts.get(carts.size()-1).getTotalOrderPrice();
+        }
+        m.addAttribute("carts", carts);
+        m.addAttribute("totalOrderPrice", totalOrderPrice);
+
+        return "/user/cart";
+    }
+
+    @GetMapping("/cartQuantityUpdate")
+    public String updateCartQuantity(@RequestParam String sym, @RequestParam Integer cid) {
+        cartService.updateCartQuantity(cid, sym);
+        return "redirect:/user/cart";
+    }
+
+    @GetMapping("/orders")
+    public String OrderPage() {
+        return "/user/order";
     }
 
 

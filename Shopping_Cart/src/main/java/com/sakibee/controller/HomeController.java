@@ -3,6 +3,7 @@ package com.sakibee.controller;
 import com.sakibee.model.Category;
 import com.sakibee.model.Product;
 import com.sakibee.model.User;
+import com.sakibee.service.CartService;
 import com.sakibee.service.CategoryService;
 import com.sakibee.service.ProductService;
 import com.sakibee.service.UserService;
@@ -43,6 +44,8 @@ public class HomeController {
     private CommonUtil commonUtil;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CartService cartService;
 
     @ModelAttribute
     public void getUserDatails(Principal p, Model m) {
@@ -50,9 +53,12 @@ public class HomeController {
             String email = p.getName();
             User user = userService.getUserByEmail(email);
             m.addAttribute("user", user);
+            Integer productCount = cartService.getCartProductCount(user.getId());
+            m.addAttribute("productCount",productCount);
         }
         List<Category> category = categoryService.getAllActiveCategory();
         m.addAttribute("category", category);
+
     }
 
     @GetMapping("/")

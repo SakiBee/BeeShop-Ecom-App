@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<section>
+  <div class="container-fluid mt-3 p-5">
+    <div class="card card-sh">
+      <div class="card-header text-center">
+        <p class="fs-4">Added Products</p>
+        <th:block th:if="${successMsg}">
+          <p class="text-success fw-bold">[[${successMsg}]]</p>
+        </th:block>
+        <th:block th:if="${errorMsg}">
+          <p class="text-danger fw-bold">[[${errorMsg}]]</p>
+        </th:block>
+      </div>
+      <div class="card-body">
+        <th:block th:if="${carts.size() > 0}">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Serial No</th>
+              <th scope="col">Image</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Unit Price</th>
+              <th scope="col" class="text-center">Quantity</th>
+              <th scope="col">Total Price</th>
+            </tr>
+            </thead>
+            <tbody>
+              <tr th:each="cart, c : ${carts}">
+                <th scope="row">[[${c.count}]]</th>
+                <td><img th:src="@{'/img/product_img/'+${cart.product.image}}" width="80" height="55"></td>
+                <td>[[${cart.product.title}]]</td>
+                <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${cart.product.discountPrice}]]</td>
+                <td class="text-center">
+                  <a th:href="@{'/user/cartQuantityUpdate?sym=dec&cid='+${cart.id}}" class="btn btn-outline-secondary"><i class="fa-solid fa-minus"></i></a>
+                   <span class="p-2">  [[${cart.quantity}]]  </span>
+                  <a th:href="@{'/user/cartQuantityUpdate?sym=inc&cid='+${cart.id}}" class="btn btn-outline-secondary"><i class="fa-solid fa-plus"></i></a>
+                </td>
+                <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${cart.totalPrice}]]</td>
+              </tr>
+              <tr>
+                <td colspan="4"></td>
+                <td class="fw-bold">Total Ordered Price: </td>
+                <td class="fw-bold"><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${totalOrderPrice}]]</td>
+              </tr>
+              <tr>
+                <td colspan="3"></td>
+                <td> <a href="#" class="btn btn-primary text-decoration-none">Proceed Payment</a> </td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </th:block>
+
+          <th:block th:unless="${carts.size() > 0}">
+            <div class="text-center">
+              <p>No Products added</p>
+            </div>
+          </th:block>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

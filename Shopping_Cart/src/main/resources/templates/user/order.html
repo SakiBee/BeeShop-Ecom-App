@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<section>
+    <div class="container mt-6 p-5">
+        <div class="row">
+            <div class="card shadow p-3 mb-5 mt-5 bg-body-tertiary rounded col">
+                <div class="card-header">
+                    <p class="fs-4 text-center">Delivery Address</p>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="row mb-3 ">
+                            <div class="col">
+                                <label class="form-label">Full Name</label>
+                                <input class="form-control" name="name" type="text" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Mobile Number</label>
+                                <input class="form-control" name="mobileNumber" type="number" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Email</label>
+                                <input class="form-control" name="email" type="email" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Address</label>
+                                <input class="form-control" name="address" type="text" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">City</label>
+                                <input class="form-control" name="city" type="text" required>
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Post Code</label>
+                                <input class="form-control" name="postCode" type="number" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6 p-5">
+                <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <div class="card-header">
+                        <p class="fs-4 text-center">Payment Method</p>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td>Total Price</td>
+                                    <td>:</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 437598</td>
+                                </tr>
+                                <tr>
+                                    <td>Delivery Fee</td>
+                                    <td>:</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 498</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax</td>
+                                    <td>:</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 566</td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td>Total Payment</td>
+                                    <td>:</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 566</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-body">
+                        <form action="#" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Select Payment Type</label>
+                                <select class=" form-control">
+                                    <option>--Select--</option>
+                                    <option>Cash On Delivery</option>
+                                    <option>Online Payment</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn bg-primary text-white col-md-12">Place Order</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
