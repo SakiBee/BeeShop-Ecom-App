@@ -1,8 +1,10 @@
 package com.sakibee.controller;
 
 import com.sakibee.model.Cart;
+import com.sakibee.model.OrderRequest;
 import com.sakibee.model.User;
 import com.sakibee.service.CartService;
+import com.sakibee.service.ProductOrderService;
 import com.sakibee.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private ProductOrderService productOrderService;
 
     @ModelAttribute
     public void getUserDatails(Principal p, Model m) {
@@ -48,7 +52,7 @@ public class UserController {
 
     @GetMapping("/cart")
     public String laodCart(Principal p, Model m) {
-        User user = userService.getUserByEmail(p.getName());
+        User user = getLoggedInUser(p);
         List<Cart> carts = cartService.getCartByUser(user.getId());
         Double totalOrderPrice = 0.0;
         if(carts.size() > 0) {
@@ -67,8 +71,38 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public String OrderPage() {
+    public String OrderPage(Principal p, Model m) {
+        User user = getLoggedInUser(p);
+        List<Cart> carts = cartService.getCartByUser(user.getId());
+        m.addAttribute("carts", carts);
+
+        Double totalOrderPrice = 0.0, orderPrice = 0.0;
+        Double tax = 100.0;
+        Double shipping_fee = 150.0;
+        if(carts.size() > 0) {
+            orderPrice = carts.get(carts.size()-1).getTotalOrderPrice();
+            totalOrderPrice = carts.get(carts.size()-1).getTotalOrderPrice()+tax+shipping_fee;
+        }
+        m.addAttribute("tax", tax);
+        m.addAttribute("orderPrice", orderPrice);
+        m.addAttribute("totalOrderPrice", totalOrderPrice);
         return "/user/order";
+    }
+
+    private User getLoggedInUser (Principal p) {
+        return userService.getUserByEmail(p.getName());
+    }
+
+    @PostMapping("/saveOrder")
+    public String saveOrder(@ModelAttribute OrderRequest orderRequest, Principal p) {
+        User user = getLoggedInUser(p);
+        productOrderService.saveOrder(user.getId(), orderRequest);
+        return "/user/success";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "/user/profile";
     }
 
 

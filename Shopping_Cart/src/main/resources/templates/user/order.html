@@ -8,21 +8,22 @@
 <body>
 <section>
     <div class="container mt-6 p-5">
+        <form action="/user/saveOrder" method="post">
         <div class="row">
             <div class="card shadow p-3 mb-5 mt-5 bg-body-tertiary rounded col">
                 <div class="card-header">
                     <p class="fs-4 text-center">Delivery Address</p>
                 </div>
                 <div class="card-body">
-                    <form>
+<!--                    <form>-->
                         <div class="row mb-3 ">
                             <div class="col">
                                 <label class="form-label">Full Name</label>
-                                <input class="form-control" name="name" type="text" required>
+                                <input class="form-control" name="fullName" type="text" required>
                             </div>
                             <div class="col">
                                 <label class="form-label">Mobile Number</label>
-                                <input class="form-control" name="mobileNumber" type="number" required>
+                                <input class="form-control" name="mobileNo" type="number" required>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -45,13 +46,13 @@
                                 <input class="form-control" name="postCode" type="number" required>
                             </div>
                         </div>
-                    </form>
+<!--                    </form>-->
                 </div>
             </div>
             <div class="col-md-6 p-5">
                 <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                     <div class="card-header">
-                        <p class="fs-4 text-center">Payment Method</p>
+                        <p class="fs-4 text-center">Payment</p>
                     </div>
                     <div class="card-body">
                         <table class="table table-borderless">
@@ -59,42 +60,42 @@
                                 <tr>
                                     <td>Total Price</td>
                                     <td>:</td>
-                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 437598</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${orderPrice}]]</td>
                                 </tr>
                                 <tr>
                                     <td>Delivery Fee</td>
                                     <td>:</td>
-                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 498</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 150</td>
                                 </tr>
                                 <tr>
                                     <td>Tax</td>
                                     <td>:</td>
-                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 566</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${tax}]]</td>
                                 </tr>
                                 <tr class="border-top">
                                     <td>Total Payment</td>
                                     <td>:</td>
-                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> 566</td>
+                                    <td><i class="fa-solid fa-bangladeshi-taka-sign"></i> [[${totalOrderPrice}]]</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="card-body">
-                        <form action="#" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Select Payment Type</label>
-                                <select class=" form-control">
-                                    <option>--Select--</option>
-                                    <option>Cash On Delivery</option>
-                                    <option>Online Payment</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn bg-primary text-white col-md-12">Place Order</button>
-                        </form>
+<!--                        <form action="#" method="post">-->
+                        <div class="mb-3">
+                            <label class="form-label" >Select Payment Type</label>
+                            <select class=" form-control" name="paymentType">
+                                <option>--Select--</option>
+                                <option>Cash On Delivery</option>
+                                <option>Online Payment</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn bg-primary text-white col-md-12">Place Order</button>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
     </div>
 </section>
 </body>

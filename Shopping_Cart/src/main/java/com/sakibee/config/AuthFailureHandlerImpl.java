@@ -29,24 +29,30 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
         String email = request.getParameter("username");
         User user = userRepository.findByEmail(email);
 
-        if(user.getIsEnable()) {
-            if(user.getAccountNonLocked()) {
-                if(user.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
-                    userService.increaseFailedAttempt(user);
+        if(user != null) {
+            if(user.getIsEnable()) {
+                if(user.getAccountNonLocked()) {
+                    if(user.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
+                        userService.increaseFailedAttempt(user);
+                    } else {
+                        userService.userAccountLock(user);
+                        exception = new LockedException("Your account is locked!! faild attempt 3");
+                    }
                 } else {
-                    userService.userAccountLock(user);
-                    exception = new LockedException("Your account is locked!! faild attempt 3");
+                    if(userService.unlockAccountTimeExpired(user)) {
+                        exception = new LockedException("Your account is unlocked. Please try to login");
+                    } else {
+                        exception = new LockedException(("Your account is locked. Please try again later"));
+                    }
                 }
             } else {
-                if(userService.unlockAccountTimeExpired(user)) {
-                    exception = new LockedException("Your account is unlocked. Please try to login");
-                } else {
-                    exception = new LockedException(("Your account is locked. Please try again later"));
-                }
+                exception = new LockedException("Your account is inactive");
             }
         } else {
-            exception = new LockedException("Your account is inactive");
+            exception = new LockedException("Invalid Credentials!");
         }
+
+
         super.setDefaultFailureUrl("/signin?error");
         super.onAuthenticationFailure(request, response, exception);
 
