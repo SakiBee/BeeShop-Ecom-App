@@ -7,20 +7,37 @@
 </head>
 <body>
     <section>
-        <div class="container-fluid mt-3 p-5">
-            <div class="card card-sh">
-                <div class="card-header text-center">
-                    <p class="fs-4">Products</p>
-                    <th:block th:if="${successMsg}">
-                        <p class="text-success fw-bold">[[${successMsg}]]</p>
-                    </th:block>
-                    <th:block th:if="${errorMsg}">
-                        <p class="text-danger fw-bold">[[${errorMsg}]]</p>
-                    </th:block>
+        <div class="container-fluid mt-5 p-3">
+            <div class="row">
+                <p class="text-center fs-3 mt-2">All Products</p>
+                <hr>
+                <a href="/admin/" class="text-decoration-none"><i class="fa-solid fa-arrow-left"></i>Back</a>
+                <th:block th:if="${successMsg}">
+                    <p class="text-success fw-bold text-center">[[${successMsg}]]</p>
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                </th:block>
+                <th:block th:if="${errorMsg}">
+                    <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+                    <p class="text-danger fw-bold">[[${errorMsg}]]</p>
+                </th:block>
+                <div class="col-md-4 p-3">
+                    <form action="/admin/products" method="get">
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" name="ch" class="form-control" placeholder="Search product">
+                            </div>
+                            <div class="col">
+                                <button class="btn btn-primary col">Search</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+            </div>
+
+            <div class="card card-sh">
                 <div class="card-body">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-bordered">
+                        <thead class="table-light">
                             <tr>
                                 <th scope="col">Serial No</th>
                                 <th scope="col">Image</th>

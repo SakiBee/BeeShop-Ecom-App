@@ -6,16 +6,51 @@ import com.sakibee.service.UserService;
 import com.sakibee.utils.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Override
+    public User updateUserProfile(User user, MultipartFile file) throws IOException {
+        User oldUser = userRepository.findById(user.getId()).get();
+
+        if(!file.isEmpty()) {
+            oldUser.setImage(file.getOriginalFilename());
+        }
+
+        if(!ObjectUtils.isEmpty(oldUser)) {
+            oldUser.setName(user.getName());
+            oldUser.setMobileNumber(user.getMobileNumber());
+            oldUser.setCity(user.getCity());
+            oldUser.setPostCode(user.getPostCode());
+            userRepository.save(oldUser);
+        }
+        try {
+            if(!file.isEmpty()) {
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return oldUser;
+    }
 
     @Autowired
     private UserRepository userRepository;
@@ -120,6 +155,19 @@ public class UserServiceImpl implements UserService {
         User saveUser = userRepository.save(user);
         return saveUser;
     }
+
+//    @Override
+//    public User saveAdmin(User user) {
+//        user.setRole("ROLE_ADMIN");
+//        user.setIsEnable(true);
+//        user.setAccountNonLocked(true);
+//        user.setFailedAttempt(0);
+//        user.setLockTime(null);
+//        String encodePassword = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(encodePassword);
+//        User saveAdmin = userRepository.save(user);
+//        return saveAdmin;
+//    }
 
 
 }

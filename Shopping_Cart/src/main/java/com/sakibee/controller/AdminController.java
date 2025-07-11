@@ -159,8 +159,13 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model m) {
-        List<Product> products = productService.getAllProducts();
+    public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch) {
+        List<Product> products = null;
+        if(ch != null && ch.length() > 0) {
+            products = productService.searchProduct(ch);
+        } else {
+            products = productService.getAllProducts();
+        }
         m.addAttribute("products", products);
         return "admin/products";
     }
@@ -225,5 +230,28 @@ public class AdminController {
 
         return "redirect:/admin/users";
     }
+
+    @GetMapping("/add_admin")
+    public String loadAdminAdd() {
+        return "/admin/add_admin";
+    }
+
+//    @PostMapping("/addAdmin")
+//    public String saveAdmin(@ModelAttribute User user, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+//        String imageName = file.isEmpty() ? "defaultImage.jpg" : file.getOriginalFilename();
+//        user.setImage(imageName);
+//        User saveAdmin = userService.saveAdmin(user);
+//        if(!ObjectUtils.isEmpty(saveAdmin)) {
+//            if(!file.isEmpty()) {
+//                File saveFile = new ClassPathResource("static/img").getFile();
+//                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator + file.getOriginalFilename());
+//                Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//            }
+//            redirectAttributes.addFlashAttribute("successMsg", "Congratulations! Admin Successfully Registered");
+//        } else {
+//            redirectAttributes.addFlashAttribute("errorMsg", "Oops! Something is wrong");
+//        }
+//        return "redirect:/admin/add_admin";
+//    }
 
 }

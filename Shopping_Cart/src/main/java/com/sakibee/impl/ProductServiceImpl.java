@@ -19,9 +19,13 @@ import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-
     @Autowired
     private ProductRepository productRepository;
+
+    @Override
+    public List<Product> searchProduct(String text) {
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(text, text);
+    }
 
     @Override
     public Product saveProduct(Product product) {

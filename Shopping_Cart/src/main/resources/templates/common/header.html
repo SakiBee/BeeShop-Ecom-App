@@ -8,7 +8,6 @@
     </head>
     <body>
         <div th:fragment="header">
-            <!-- Start Navbar -->
             <nav class="navbar navbar-expand-lg bg-primary fixed-top navbar-dark" >
                 <div class="container-fluid">
                     <a class="navbar-brand" href="/"><i class="fa-solid fa-cart-shopping"></i> BeeStore</a>
@@ -39,32 +38,32 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="/register">Register</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="/admin/"><i class="fa-solid fa-user-tie"></i> Admin</a>
-                                </li>
                             </th:block>
                             <th:block th:unless="${user == null}">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="/user/cart"><i class="fa-solid fa-cart-plus"></i> Cart[ [[${productCount}]] ]</a>
-                                </li>
-                                <li class="nav-item dropdown">
+                                <th:block th:if="${user.role == ROLE_USER}">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="/user/cart"><i class="fa-solid fa-cart-plus"></i> Cart[ [[${productCount}]] ]</a>
+                                    </li>
+                                </th:block>
+
+                                <li class="nav-item dropdown me-3">
                                     <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fa-solid fa-user-tie"></i> [[${user.name}]]</a>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
-                                        <li><a class="dropdown-item" href="#">My Orders</a></li>
+                                        <th:block th:if="${user.role == ROLE_USER}">
+                                            <li class="nav-item">
+                                                <a class="dropdown-item" href="#">My Orders</a>
+                                            </li>
+                                        </th:block>
                                         <li><a class="dropdown-item" href="/logout">Logout</a></li>
                                     </ul>
                                 </li>
-<!--                                <li class="nav-item">-->
-<!--                                    <a class="nav-link active" aria-current="page" href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>-->
-<!--                                </li>-->
                             </th:block>
                         </ul>
                     </div>
                 </div>
             </nav>
-            <!-- End Navbar -->
         </div>
     </body>
 </html>

@@ -1,7 +1,9 @@
 package com.sakibee.service;
 
 import com.sakibee.model.User;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -22,5 +24,9 @@ public interface UserService {
     public User getUserByToken(String token);
 
     public User updateUser(User user);
+
+    public User updateUserProfile(User user, MultipartFile file) throws IOException;
+
+//    public User saveAdmin(User user);
 
 }

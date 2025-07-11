@@ -62,7 +62,16 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index() {
+    public String index(Model m) {
+        List<Category> categories = categoryService.getAllCategory().stream()
+                .sorted((c1, c2) -> c2.getId().compareTo(c1.getId()))
+                .limit(6)
+                .toList();
+        List<Product> products = productService.getAllActiveProduct("").stream()
+                .sorted((p1, p2) -> p2.getId().compareTo(p1.getId()))
+                .limit(8).toList();
+        m.addAttribute("categories", categories);
+        m.addAttribute("products", products);
         return "index";
     }
 
@@ -164,5 +173,14 @@ public class HomeController {
             m.addAttribute("msg", "Password Reset Successfully!");
             return "message";
         }
+    }
+
+    @GetMapping("/search")
+    public String searchProduct(@RequestParam String ch, Model m) {
+        List<Product> products = productService.searchProduct(ch);
+        m.addAttribute("products", products);
+        List<Category> categories = categoryService.getAllCategory();
+        m.addAttribute("categories", categories);
+        return "/product";
     }
 }
